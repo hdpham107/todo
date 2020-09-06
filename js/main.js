@@ -1,4 +1,5 @@
 var taskService = new TaskService();
+var validation = new Validation();
 
 layDSTask();
 function layDSTask() {
@@ -16,28 +17,39 @@ function getELE(ele) {
     return document.getElementById(ele);
 }
 
-function layThongTin() {
+// function layThongTin() {
+//     var createDate = getELE("datepicker").value;
+//     var content = getELE("newTask").value;
+
+//     console.log(createDate, content);
+//     return new Task("", content, 0, createDate);
+// }
+
+getELE("addItem").addEventListener("click", function () {
     var createDate = getELE("datepicker").value;
     var content = getELE("newTask").value;
 
-    console.log(createDate, content);
-    return new Task("", content, 0, createDate);
-}
+    var newTask = new Task(content, 0, createDate);
 
-getELE("addItem").addEventListener("click", function () {
-    // var createDate = getELE("datepicker").value;
-    // var content = getELE("newTask").value;
-    // var newTask = new Task("", content, 0, createDate);
-    var newTask = layThongTin();
+    var isValid = true;
+    // kiểm tra ngày rỗng
+    isValid &= validation.kiemTraRong(createDate, "Ngày không được phép rỗng!");
+    console.log(isValid);
+    // kiểm tra nội dung task rỗng
+    isValid &= validation.kiemTraRong(content, "Nội dung task không được phép rỗng!");
+    console.log(isValid);
 
-    taskService.themTaskAPI(newTask)
-        .then(function (result) {
-            console.log(result.data);
-            layDSTask();
-        })
-        .catch(function (err) {
-            console.log(err);
-        });
+    if (isValid) {
+        console.log(newTask);
+        taskService.themTaskAPI(newTask)
+            .then(function (result) {
+                console.log(result.data);
+                layDSTask();
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    }
 });
 
 function hienThiDSTask(mangTask) {
@@ -50,20 +62,32 @@ function hienThiDSTask(mangTask) {
         if (task.status == 0) {
             contentTodo += `
                 <li>
-                    ${task.taskContent} 
                     <span>
-                        <i class="fa fa-trash-alt"></i>
-                        <i class="fa fa-check-circle"></i>
+                        ${task.taskContent} 
+                    </span>
+                    <span class="buttons">
+                        <button class="remove">
+                            <i class="fa fa-trash-alt" onclick="xoaTask(${task.id})"></i>
+                        </button>
+                        <button class="complete">
+                            <i class="fa fa-check-circle far" onclick="checkTask(${task.id})"></i>
+                        </button>
                     </span>
                 </li>
             `;
         } else {
             contentCompleted += `
                 <li>
-                    ${task.taskContent}
                     <span>
-                        <i class="fa fa-trash-alt"></i>
-                        <i class="fa fa-check-circle"></i>
+                        ${task.taskContent}
+                    </span>
+                    <span class="buttons">
+                        <button class="remove">
+                            <i class="fa fa-trash-alt" onclick="xoaTask(${task.id})"></i>
+                        </button>
+                        <button class="complete">
+                            <i class="fa fa-check-circle fas" onclick="checkTask(${task.id})"></i>
+                        </button>
                     </span>
                 </li>
             `;
@@ -72,4 +96,42 @@ function hienThiDSTask(mangTask) {
 
     todo.innerHTML = contentTodo;
     completed.innerHTML = contentCompleted;
+}
+
+// xóa task
+function xoaTask(id) {
+    taskService.xoaTaskAPI(id)
+        .then(function () {
+            layDSTask();
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+}
+
+// check task
+function checkTask(id) {
+    taskService.layTaskAPI(id)
+        .then(function (result) {
+            console.log(result.data);
+            var task = result.data;
+            if (task.status == 0) {
+                task.status = 1;
+            } else {
+                task.status = 0;
+            }
+
+            console.log(task);
+            // cập nhật task với status mới
+            taskService.capNhatTaskAPI(task)
+                .then(function () {
+                    layDSTask();
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
 }
