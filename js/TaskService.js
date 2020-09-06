@@ -1,9 +1,16 @@
 function TaskService(){
-    this.themTask = function(task){
+    this.themTaskAPI = function(task){
         return axios({
             url: "https://5f3bbfc4fff8550016ae5980.mockapi.io/Task",
             method: "POST",
-            data: task
+            data: task,
+        });
+    }
+
+    this.layDSTaskAPI = function(){
+        return axios({
+            url: "https://5f3bbfc4fff8550016ae5980.mockapi.io/Task",
+            method: "GET",
         });
     }
 }
