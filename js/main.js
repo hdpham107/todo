@@ -6,7 +6,9 @@ function layDSTask() {
     taskService.layDSTaskAPI()
         .then(function (result) {
             console.log(result.data);
+
             hienThiDSTask(result.data);
+            // var mang= result.data;
         })
         .catch(function (err) {
             console.log(err);
@@ -134,4 +136,113 @@ function checkTask(id) {
         .catch(function (err) {
             console.log(err);
         });
-}
+};
+
+// sắp xếp theo tên
+// taskService.layDSTaskAPI()
+//     .then(function (result) {
+//         result.data.forEach(() => {
+
+//         })
+
+//             .catch(function (err) {
+//                 console.log(err);
+//             });
+
+// var mang=function layDSTask() {
+// function layDSTask() {
+getELE("all").addEventListener("click", function () {
+    taskService.layDSTaskAPI()
+        .then(function (result) {
+            // console.log(result.data);
+            // hienThiDSTask(result.data);
+            // result.data.forEach((task)=>{
+            //     console.log(task.taskContent);
+            // })
+            var mang = result.data;
+            var mangTaskTheoNgay = mang.sort((taskTiepTheo, task) => {
+                // return taskTiepTheo.createDate - task.createDate; 
+
+                var tenTaskTiepTheo = taskTiepTheo.createDate;
+                var tenTask = task.createDate;
+                if (tenTask < tenTaskTiepTheo) {
+                    return 1;
+                }
+                if (tenTask > tenTaskTiepTheo) {
+                    return -1;
+                }
+                return 1;
+            });
+            // console.log(mangTaskTheoTen);
+            // layDSTask(mangTaskTheoTen);
+            hienThiDSTask(mangTaskTheoNgay);
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+        // console.log(mangTaskTheoTen);
+});
+getELE("two").addEventListener("click", function () {
+    taskService.layDSTaskAPI()
+        .then(function (result) {
+            var mang = result.data;
+            var mangTaskTheoNgay = mang.sort((taskTiepTheo, task) => {
+               var tenTaskTiepTheo = taskTiepTheo.taskContent;
+                var tenTask = task.taskContent;
+                if (tenTask < tenTaskTiepTheo) {
+                    return 1;
+                }
+                if (tenTask > tenTaskTiepTheo) {
+                    return -1;
+                }
+                return 1;
+            });
+            hienThiDSTask(mangTaskTheoNgay);
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+});
+getELE("three").addEventListener("click", function () {
+    taskService.layDSTaskAPI()
+        .then(function (result) {
+            var mang = result.data;
+            var mangTaskTheoNgay = mang.sort((taskTiepTheo, task) => {
+               var tenTaskTiepTheo = taskTiepTheo.taskContent;
+                var tenTask = task.taskContent;
+                if (tenTask > tenTaskTiepTheo) {
+                    return 1;
+                }
+                if (tenTask < tenTaskTiepTheo) {
+                    return -1;
+                }
+                return 1;
+            });
+            hienThiDSTask(mangTaskTheoNgay);
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+});
+
+// }
+
+/*
+let mang = [
+    layDSTask()
+    // {
+    //     createDate: "06/09/2020",
+    //     id: "16",
+    //     status: 0,
+    //     taskContent: "ghhgg"
+    // },
+    // {
+    //     createDate: "05/09/2020",
+    //     id: "16",
+    //     status: 0,
+    //     taskContent: "a"
+    // }
+]
+*/
+
+// mang.layDSTaskAPI();
